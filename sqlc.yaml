@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "mysql"
+    queries: "query.sql" # SQL 語句路徑
+    schema: "schema.sql" # 資料表定義檔路徑
+    gen:
+      go:
+        package: "db" # 生成的 Go 程式碼包名
+        out: "db" # 生成的檔案存放資料夾
