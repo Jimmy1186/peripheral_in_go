@@ -576,6 +576,7 @@ type CargoInfo struct {
 	ElevatorConfigID      sql.NullString
 	CustomID              sql.NullString
 	Owner                 CargoInfoOwner
+	StackConfigID         sql.NullString
 }
 
 type Category struct {
@@ -957,6 +958,13 @@ type SpawnCargoPeripheralGroupBridge struct {
 	TimelineID        string
 	PeripheralGroupID string
 	SpawnCargoInfoID  sql.NullString
+}
+
+type StackConfig struct {
+	ID         string
+	Disable    bool
+	Heights    json.RawMessage
+	StackCount int32
 }
 
 type Tagsetting struct {

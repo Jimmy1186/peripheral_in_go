@@ -5,32 +5,34 @@ import (
 )
 
 type YFYStack struct {
-	Name string
+	Name        string
 	Description string
 
 	Disable bool
-	Booker string
+	Booker  string
 
 	StackCount int //堆堆疊數量
-	Cargo json.RawMessage `json:"cargo"`
+	heights    []int
+	Cargo      []json.RawMessage `json:"cargo"`
 }
 
 func NewStack(data YFYStack) *YFYStack {
 
 	return &YFYStack{
-		Name: data.Name,
+		Name:        data.Name,
 		Description: data.Description,
-		Disable: data.Disable,
-		Booker: "none",
+		Disable:     data.Disable,
+		Booker:      "none",
 
+		heights:    data.heights,
 		StackCount: data.StackCount,
-		Cargo: data.Cargo,
+		Cargo:      data.Cargo,
 	}
 
 }
 
-
-func (ns *YFYStack) UpdateConfig(name string, desc string){
+func (ns *YFYStack) UpdateConfig(name string, desc string, disable bool) {
 	ns.Name = name
 	ns.Description = desc
+	ns.Disable = disable
 }
