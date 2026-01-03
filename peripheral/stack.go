@@ -12,8 +12,14 @@ type YFYStack struct {
 	Booker  string
 
 	StackCount int //堆堆疊數量
-	heights    []int
-	Cargo      []json.RawMessage `json:"cargo"`
+	Heights    []int
+	Cargo      []CargoData
+}
+
+type CargoData struct {
+	ID       string
+	Metadata json.RawMessage `json:"metadata"`
+	CustomID string
 }
 
 func NewStack(data YFYStack) *YFYStack {
@@ -24,7 +30,7 @@ func NewStack(data YFYStack) *YFYStack {
 		Disable:     data.Disable,
 		Booker:      "none",
 
-		heights:    data.heights,
+		Heights:    data.Heights,
 		StackCount: data.StackCount,
 		Cargo:      data.Cargo,
 	}

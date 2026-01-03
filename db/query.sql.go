@@ -8,7 +8,76 @@ package db
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"strings"
 )
+
+const allStack = `-- name: AllStack :many
+SELECT 
+    ms.id,
+    loc.locationId AS locationId,
+    stack.id AS stackId,
+    stack.disable AS stack_disable,
+    stack.heights AS stack_heights,
+    stack.stack_count AS stack_count,
+    -- cargo_info.id as cargo_id,
+    -- cargo_info.status as cargo_status,
+    -- cargo_info.metadata as cargo_metadata,
+    -- cargo_info.custom_id as cargo_custom_id,
+    -- cargo_info.custom_cargo_metadata_id as custom_cargo_metadata_id,
+    peripheral_name.name as peripheral_name,
+    peripheral_name.description as peripheral_desc
+FROM mission_script ms
+ JOIN Loc loc ON ms.id = loc.mission_script_id
+ JOIN mock_wcs_station mws ON loc.id = mws.sourceId
+ JOIN stack_config stack ON mws.stack_id = stack.id
+ JOIN peripheral_name ON stack.name = peripheral_name.id
+ WHERE ms.id = ?
+`
+
+type AllStackRow struct {
+	ID             string
+	Locationid     string
+	Stackid        string
+	StackDisable   bool
+	StackHeights   json.RawMessage
+	StackCount     int32
+	PeripheralName sql.NullString
+	PeripheralDesc string
+}
+
+// JOIN cargo_info ON stack.id = cargo_info.stack_config_id
+func (q *Queries) AllStack(ctx context.Context, id string) ([]AllStackRow, error) {
+	rows, err := q.db.QueryContext(ctx, allStack, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []AllStackRow
+	for rows.Next() {
+		var i AllStackRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Locationid,
+			&i.Stackid,
+			&i.StackDisable,
+			&i.StackHeights,
+			&i.StackCount,
+			&i.PeripheralName,
+			&i.PeripheralDesc,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
 
 const allTitleBridgeLoc = `-- name: AllTitleBridgeLoc :many
 SELECT 
@@ -54,4 +123,119 @@ func (q *Queries) AllTitleBridgeLoc(ctx context.Context) ([]AllTitleBridgeLocRow
 		return nil, err
 	}
 	return items, nil
+}
+
+const listCargosByStackIds = `-- name: ListCargosByStackIds :many
+SELECT 
+    stack_config_id,
+    id as cargo_id,
+    status as cargo_status,
+    metadata as cargo_metadata,
+    custom_id as cargo_custom_id
+FROM cargo_info 
+WHERE stack_config_id IN (/*SLICE:stackIds*/?)
+`
+
+type ListCargosByStackIdsRow struct {
+	StackConfigID sql.NullString
+	CargoID       string
+	CargoStatus   CargoInfoStatus
+	CargoMetadata json.RawMessage
+	CargoCustomID sql.NullString
+}
+
+// sqlc 支援傳入 slice: WHERE stack_config_id IN (?)
+func (q *Queries) ListCargosByStackIds(ctx context.Context, stackids []sql.NullString) ([]ListCargosByStackIdsRow, error) {
+	query := listCargosByStackIds
+	var queryParams []interface{}
+	if len(stackids) > 0 {
+		for _, v := range stackids {
+			queryParams = append(queryParams, v)
+		}
+		query = strings.Replace(query, "/*SLICE:stackIds*/?", strings.Repeat(",?", len(stackids))[1:], 1)
+	} else {
+		query = strings.Replace(query, "/*SLICE:stackIds*/?", "NULL", 1)
+	}
+	rows, err := q.db.QueryContext(ctx, query, queryParams...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListCargosByStackIdsRow
+	for rows.Next() {
+		var i ListCargosByStackIdsRow
+		if err := rows.Scan(
+			&i.StackConfigID,
+			&i.CargoID,
+			&i.CargoStatus,
+			&i.CargoMetadata,
+			&i.CargoCustomID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const oneStack = `-- name: OneStack :one
+SELECT 
+    ms.id,
+    loc.locationId AS locationId,
+    stack.id AS stackId,
+    stack.disable AS stack_disable,
+    stack.heights AS stack_heights,
+    stack.stack_count AS stack_count,
+    -- cargo_info.id as cargo_id,
+    -- cargo_info.status as cargo_status,
+    -- cargo_info.metadata as cargo_metadata,
+    -- cargo_info.custom_id as cargo_custom_id,
+    -- cargo_info.custom_cargo_metadata_id as custom_cargo_metadata_id,
+    peripheral_name.name as peripheral_name,
+    peripheral_name.description as peripheral_desc
+FROM mission_script ms
+ JOIN Loc loc ON ms.id = loc.mission_script_id
+ JOIN mock_wcs_station mws ON loc.id = mws.sourceId
+ JOIN stack_config stack ON mws.stack_id = stack.id
+ JOIN peripheral_name ON stack.name = peripheral_name.id
+ WHERE ms.id = ? AND loc.locationId = ?
+`
+
+type OneStackParams struct {
+	ID         string
+	Locationid string
+}
+
+type OneStackRow struct {
+	ID             string
+	Locationid     string
+	Stackid        string
+	StackDisable   bool
+	StackHeights   json.RawMessage
+	StackCount     int32
+	PeripheralName sql.NullString
+	PeripheralDesc string
+}
+
+// JOIN cargo_info ON stack.id = cargo_info.stack_config_id
+func (q *Queries) OneStack(ctx context.Context, arg OneStackParams) (OneStackRow, error) {
+	row := q.db.QueryRowContext(ctx, oneStack, arg.ID, arg.Locationid)
+	var i OneStackRow
+	err := row.Scan(
+		&i.ID,
+		&i.Locationid,
+		&i.Stackid,
+		&i.StackDisable,
+		&i.StackHeights,
+		&i.StackCount,
+		&i.PeripheralName,
+		&i.PeripheralDesc,
+	)
+	return i, err
 }

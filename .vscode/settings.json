@@ -1,3 +1,13 @@
 {
-  "cSpell.words": ["kenmec"]
+  "cSpell.words": ["kenmec"],
+  "[go]": {
+        "editor.defaultFormatter": "golang.go", // 使用 Go 官方工具而非 Prettier
+        "editor.formatOnSave": true,           // 存檔自動排版
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always" // 存檔自動刪除/補上 import
+        }
+    },
+    // 設定 Go 使用哪種工具排版 (推薦 goimports)
+    "go.formatTool": "goimports", 
+    "go.useLanguageServer": true
 }

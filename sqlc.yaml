@@ -1,7 +1,7 @@
 version: "2"
 sql:
   - engine: "mysql"
-    queries: "query/" # SQL 語句路徑
+    queries: "queries/" # SQL 語句路徑
     schema: "migrations/" # 資料表定義檔路徑
     gen:
       go:
