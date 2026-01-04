@@ -9,5 +9,7 @@
     },
     // 設定 Go 使用哪種工具排版 (推薦 goimports)
     "go.formatTool": "goimports", 
-    "go.useLanguageServer": true
+    "go.useLanguageServer": true,
+    "cSpell.enabled": false,
+    "cSpell.caseSensitive": false
 }

@@ -19,7 +19,6 @@ type YFYStack struct {
 type CargoData struct {
 	ID       string
 	Metadata json.RawMessage `json:"metadata"`
-	CustomID string
 }
 
 func NewStack(data YFYStack) *YFYStack {
@@ -35,6 +34,12 @@ func NewStack(data YFYStack) *YFYStack {
 		Cargo:      data.Cargo,
 	}
 
+}
+
+// !! ------  呼叫下面的方法記得用上層的mutex --- !!
+
+func (ns *YFYStack) UpdateAllCargo(c []CargoData) {
+	ns.Cargo = c
 }
 
 func (ns *YFYStack) UpdateConfig(name string, desc string, disable bool) {

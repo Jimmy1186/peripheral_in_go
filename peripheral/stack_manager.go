@@ -7,13 +7,17 @@ import (
 	"fmt"
 	"kenmec/peripheral/jimmy/db"
 	"kenmec/peripheral/jimmy/initial"
-
+	stackpb "kenmec/peripheral/jimmy/proto"
 	"strconv"
+	"sync"
 )
 
 type YFYStackManager struct {
 	infoMap map[string]*YFYStack
 	db      *db.Queries
+	IsDirty bool //如果有變動 變true時在傳出去
+
+	Mu sync.Mutex
 }
 
 func NewStackManager(q *db.Queries) *YFYStackManager {
@@ -78,10 +82,14 @@ func NewStackManager(q *db.Queries) *YFYStackManager {
 	return &YFYStackManager{
 		infoMap: defaultMap,
 		db:      q,
+		IsDirty: true,
 	}
 }
 
 func (m *YFYStackManager) AddStack(locationId string) {
+	m.Mu.Lock()
+	defer m.Mu.Unlock()
+
 	ctx := context.Background()
 	txt := initial.Rdb.Get(ctx, "current-script-id").Val()
 
@@ -110,10 +118,39 @@ func (m *YFYStackManager) AddStack(locationId string) {
 	})
 
 	m.infoMap[locationId] = s
+	m.IsDirty = true
 }
 
 func (m *YFYStackManager) DeleteStack(locationId string) {
+	m.Mu.Lock()
+	defer m.Mu.Unlock()
+
 	delete(m.infoMap, locationId)
+	m.IsDirty = true
+}
+
+func (m *YFYStackManager) UpdatestackConfig(locID string, name string, desc string, disable bool) {
+	m.Mu.Unlock()
+	defer m.Mu.Unlock()
+
+	s, ok := m.infoMap[locID]
+
+	if ok {
+		s.UpdateConfig(name, desc, disable)
+		m.IsDirty = true
+	}
+}
+
+func (m *YFYStackManager) UpdateCargo(locID string, cargo []CargoData) {
+	m.Mu.Unlock()
+	defer m.Mu.Unlock()
+
+	s, ok := m.infoMap[locID]
+
+	if ok {
+		s.UpdateAllCargo(cargo)
+		m.IsDirty = true
+	}
 }
 
 func (m *YFYStackManager) PrintDebug() {
@@ -126,4 +163,41 @@ func (m *YFYStackManager) PrintDebug() {
 	fmt.Println("--- Current Stack Manager Data ---")
 	fmt.Println(string(output))
 	fmt.Println("----------------------------------")
+}
+
+// ToProto 將 Manager 內部的 map 轉換為 gRPC 專用的傳輸格式
+func (m *YFYStackManager) ToProto() *stackpb.StackMapResponse {
+	// 初始化回傳的結構
+	protoMap := make(map[string]*stackpb.Stack)
+
+	for locID, s := range m.infoMap {
+		// 1. 處理 Cargo 列表
+		var pbCargos []*stackpb.Cargo
+		for _, c := range s.Cargo {
+			pbCargos = append(pbCargos, &stackpb.Cargo{
+				Id:       c.ID,
+				Metadata: c.Metadata, // []byte 直接對應 bytes
+			})
+		}
+
+		// 2. 處理 Heights (int 轉 int32)
+		var h32 []int32
+		for _, h := range s.Heights {
+			h32 = append(h32, int32(h))
+		}
+
+		// 3. 組裝成生成的 Stack 結構
+		protoMap[locID] = &stackpb.Stack{
+			Name:        s.Name,
+			Description: s.Description,
+			Disable:     s.Disable,
+			StackCount:  int32(s.StackCount),
+			Heights:     h32,
+			Cargo:       pbCargos,
+		}
+	}
+
+	return &stackpb.StackMapResponse{
+		InfoMap: protoMap,
+	}
 }

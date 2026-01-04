@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+// 這裡定義生成的 Go 程式碼要放在哪個 package
+option go_package = "kenmec/peripheral/proto/gen";
+
+package peripheral_pb;
+
+// 貨物資訊
+message Cargo {
+  string id = 1;
+  bytes metadata = 2; // 對應你的 json.RawMessage
+}
+
+// 堆棧資訊
+message Stack {
+  string name = 1;
+  string description = 2;
+  bool disable = 3;
+  int32 stack_count = 4;
+  repeated int32 heights = 5; // repeated 代表 slice
+  repeated Cargo cargo = 6;
+}
+
+// 整個 Map 的包裝
+message StackMapResponse {
+  map<string, Stack> info_map = 1;
+}
+
+// 空訊息，用於 WatchStacks 請求
+message Empty {}
+
+// 定義服務接口
+service StackService {
+  // Server-side Streaming: 客戶端呼叫後，Server 每秒推送更新
+  // rpc WatchStacks(Empty) returns (stream StackMapResponse);
+  // Client-side Streaming: Client 持續發送，Server 接收完回傳一個結果
+  rpc PushStacks(stream StackMapResponse) returns (Empty);
+}
