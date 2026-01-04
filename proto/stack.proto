@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 // 這裡定義生成的 Go 程式碼要放在哪個 package
-option go_package = "kenmec/peripheral/proto/gen";
+option go_package = "kenmec/peripheral/protoGen;gen";
 
 package peripheral_pb;
 
@@ -29,10 +29,13 @@ message StackMapResponse {
 // 空訊息，用於 WatchStacks 請求
 message Empty {}
 
+message Location{
+  string locationid = 1;
+}
+
 // 定義服務接口
 service StackService {
-  // Server-side Streaming: 客戶端呼叫後，Server 每秒推送更新
-  // rpc WatchStacks(Empty) returns (stream StackMapResponse);
   // Client-side Streaming: Client 持續發送，Server 接收完回傳一個結果
   rpc PushStacks(stream StackMapResponse) returns (Empty);
 }
+

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"kenmec/peripheral/jimmy/db"
 	"kenmec/peripheral/jimmy/initial"
-	stackpb "kenmec/peripheral/jimmy/proto"
+	stackpb "kenmec/peripheral/jimmy/protoGen"
 	"strconv"
 	"sync"
 )

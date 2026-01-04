@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.0
 // - protoc             v3.12.4
-// source: proto/stack.proto
+// source: stack.proto
 
 package gen
 
@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	StackService_PushStacks_FullMethodName = "/peripheral_pb.StackService/PushStacks"
+	StackService_AddStack_FullMethodName    = "/peripheral_pb.StackService/AddStack"
+	StackService_DeleteStack_FullMethodName = "/peripheral_pb.StackService/DeleteStack"
+	StackService_PushStacks_FullMethodName  = "/peripheral_pb.StackService/PushStacks"
 )
 
 // StackServiceClient is the client API for StackService service.
@@ -28,8 +30,10 @@ const (
 //
 // 定義服務接口
 type StackServiceClient interface {
-	// Server-side Streaming: 客戶端呼叫後，Server 每秒推送更新
-	// rpc WatchStacks(Empty) returns (stream StackMapResponse);
+	// Server-side
+	AddStack(ctx context.Context, in *Location, opts ...grpc.CallOption) (*Empty, error)
+	// Server-side
+	DeleteStack(ctx context.Context, in *Location, opts ...grpc.CallOption) (*Empty, error)
 	// Client-side Streaming: Client 持續發送，Server 接收完回傳一個結果
 	PushStacks(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[StackMapResponse, Empty], error)
 }
@@ -40,6 +44,26 @@ type stackServiceClient struct {
 
 func NewStackServiceClient(cc grpc.ClientConnInterface) StackServiceClient {
 	return &stackServiceClient{cc}
+}
+
+func (c *stackServiceClient) AddStack(ctx context.Context, in *Location, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, StackService_AddStack_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) DeleteStack(ctx context.Context, in *Location, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, StackService_DeleteStack_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *stackServiceClient) PushStacks(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[StackMapResponse, Empty], error) {
@@ -61,8 +85,10 @@ type StackService_PushStacksClient = grpc.ClientStreamingClient[StackMapResponse
 //
 // 定義服務接口
 type StackServiceServer interface {
-	// Server-side Streaming: 客戶端呼叫後，Server 每秒推送更新
-	// rpc WatchStacks(Empty) returns (stream StackMapResponse);
+	// Server-side
+	AddStack(context.Context, *Location) (*Empty, error)
+	// Server-side
+	DeleteStack(context.Context, *Location) (*Empty, error)
 	// Client-side Streaming: Client 持續發送，Server 接收完回傳一個結果
 	PushStacks(grpc.ClientStreamingServer[StackMapResponse, Empty]) error
 	mustEmbedUnimplementedStackServiceServer()
@@ -75,6 +101,12 @@ type StackServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedStackServiceServer struct{}
 
+func (UnimplementedStackServiceServer) AddStack(context.Context, *Location) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddStack not implemented")
+}
+func (UnimplementedStackServiceServer) DeleteStack(context.Context, *Location) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteStack not implemented")
+}
 func (UnimplementedStackServiceServer) PushStacks(grpc.ClientStreamingServer[StackMapResponse, Empty]) error {
 	return status.Error(codes.Unimplemented, "method PushStacks not implemented")
 }
@@ -99,6 +131,42 @@ func RegisterStackServiceServer(s grpc.ServiceRegistrar, srv StackServiceServer)
 	s.RegisterService(&StackService_ServiceDesc, srv)
 }
 
+func _StackService_AddStack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Location)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).AddStack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_AddStack_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).AddStack(ctx, req.(*Location))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_DeleteStack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Location)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).DeleteStack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_DeleteStack_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).DeleteStack(ctx, req.(*Location))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _StackService_PushStacks_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(StackServiceServer).PushStacks(&grpc.GenericServerStream[StackMapResponse, Empty]{ServerStream: stream})
 }
@@ -112,7 +180,16 @@ type StackService_PushStacksServer = grpc.ClientStreamingServer[StackMapResponse
 var StackService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "peripheral_pb.StackService",
 	HandlerType: (*StackServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddStack",
+			Handler:    _StackService_AddStack_Handler,
+		},
+		{
+			MethodName: "DeleteStack",
+			Handler:    _StackService_DeleteStack_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "PushStacks",
@@ -120,5 +197,5 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "proto/stack.proto",
+	Metadata: "stack.proto",
 }

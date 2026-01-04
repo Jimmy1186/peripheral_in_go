@@ -10,7 +10,7 @@ import (
 	"kenmec/peripheral/jimmy/db"
 	_ "kenmec/peripheral/jimmy/initial"
 	"kenmec/peripheral/jimmy/peripheral"
-	stackpb "kenmec/peripheral/jimmy/proto"
+	stackpb "kenmec/peripheral/jimmy/protoGen"
 	"log"
 	"time"
 

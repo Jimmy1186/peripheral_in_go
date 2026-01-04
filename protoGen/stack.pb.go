@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v3.12.4
-// source: proto/stack.proto
+// source: stack.proto
 
 package gen
 
@@ -32,7 +32,7 @@ type Cargo struct {
 
 func (x *Cargo) Reset() {
 	*x = Cargo{}
-	mi := &file_proto_stack_proto_msgTypes[0]
+	mi := &file_stack_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *Cargo) String() string {
 func (*Cargo) ProtoMessage() {}
 
 func (x *Cargo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stack_proto_msgTypes[0]
+	mi := &file_stack_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *Cargo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Cargo.ProtoReflect.Descriptor instead.
 func (*Cargo) Descriptor() ([]byte, []int) {
-	return file_proto_stack_proto_rawDescGZIP(), []int{0}
+	return file_stack_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Cargo) GetId() string {
@@ -89,7 +89,7 @@ type Stack struct {
 
 func (x *Stack) Reset() {
 	*x = Stack{}
-	mi := &file_proto_stack_proto_msgTypes[1]
+	mi := &file_stack_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -101,7 +101,7 @@ func (x *Stack) String() string {
 func (*Stack) ProtoMessage() {}
 
 func (x *Stack) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stack_proto_msgTypes[1]
+	mi := &file_stack_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -114,7 +114,7 @@ func (x *Stack) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Stack.ProtoReflect.Descriptor instead.
 func (*Stack) Descriptor() ([]byte, []int) {
-	return file_proto_stack_proto_rawDescGZIP(), []int{1}
+	return file_stack_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Stack) GetName() string {
@@ -169,7 +169,7 @@ type StackMapResponse struct {
 
 func (x *StackMapResponse) Reset() {
 	*x = StackMapResponse{}
-	mi := &file_proto_stack_proto_msgTypes[2]
+	mi := &file_stack_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +181,7 @@ func (x *StackMapResponse) String() string {
 func (*StackMapResponse) ProtoMessage() {}
 
 func (x *StackMapResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stack_proto_msgTypes[2]
+	mi := &file_stack_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,7 +194,7 @@ func (x *StackMapResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StackMapResponse.ProtoReflect.Descriptor instead.
 func (*StackMapResponse) Descriptor() ([]byte, []int) {
-	return file_proto_stack_proto_rawDescGZIP(), []int{2}
+	return file_stack_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StackMapResponse) GetInfoMap() map[string]*Stack {
@@ -213,7 +213,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_proto_stack_proto_msgTypes[3]
+	mi := &file_stack_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -225,7 +225,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stack_proto_msgTypes[3]
+	mi := &file_stack_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -238,14 +238,58 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_proto_stack_proto_rawDescGZIP(), []int{3}
+	return file_stack_proto_rawDescGZIP(), []int{3}
 }
 
-var File_proto_stack_proto protoreflect.FileDescriptor
+type Location struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Locationid    string                 `protobuf:"bytes,1,opt,name=locationid,proto3" json:"locationid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_proto_stack_proto_rawDesc = "" +
+func (x *Location) Reset() {
+	*x = Location{}
+	mi := &file_stack_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Location) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Location) ProtoMessage() {}
+
+func (x *Location) ProtoReflect() protoreflect.Message {
+	mi := &file_stack_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Location.ProtoReflect.Descriptor instead.
+func (*Location) Descriptor() ([]byte, []int) {
+	return file_stack_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Location) GetLocationid() string {
+	if x != nil {
+		return x.Locationid
+	}
+	return ""
+}
+
+var File_stack_proto protoreflect.FileDescriptor
+
+const file_stack_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/stack.proto\x12\rperipheral_pb\"3\n" +
+	"\vstack.proto\x12\rperipheral_pb\"3\n" +
 	"\x05Cargo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\bmetadata\x18\x02 \x01(\fR\bmetadata\"\xbe\x01\n" +
@@ -262,64 +306,75 @@ const file_proto_stack_proto_rawDesc = "" +
 	"\fInfoMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12*\n" +
 	"\x05value\x18\x02 \x01(\v2\x14.peripheral_pb.StackR\x05value:\x028\x01\"\a\n" +
-	"\x05Empty2U\n" +
-	"\fStackService\x12E\n" +
+	"\x05Empty\"*\n" +
+	"\bLocation\x12\x1e\n" +
 	"\n" +
-	"PushStacks\x12\x1f.peripheral_pb.StackMapResponse\x1a\x14.peripheral_pb.Empty(\x01B\x1dZ\x1bkenmec/peripheral/proto/genb\x06proto3"
+	"locationid\x18\x01 \x01(\tR\n" +
+	"locationid2\xce\x01\n" +
+	"\fStackService\x129\n" +
+	"\bAddStack\x12\x17.peripheral_pb.Location\x1a\x14.peripheral_pb.Empty\x12<\n" +
+	"\vDeleteStack\x12\x17.peripheral_pb.Location\x1a\x14.peripheral_pb.Empty\x12E\n" +
+	"\n" +
+	"PushStacks\x12\x1f.peripheral_pb.StackMapResponse\x1a\x14.peripheral_pb.Empty(\x01B Z\x1ekenmec/peripheral/protoGen;genb\x06proto3"
 
 var (
-	file_proto_stack_proto_rawDescOnce sync.Once
-	file_proto_stack_proto_rawDescData []byte
+	file_stack_proto_rawDescOnce sync.Once
+	file_stack_proto_rawDescData []byte
 )
 
-func file_proto_stack_proto_rawDescGZIP() []byte {
-	file_proto_stack_proto_rawDescOnce.Do(func() {
-		file_proto_stack_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_stack_proto_rawDesc), len(file_proto_stack_proto_rawDesc)))
+func file_stack_proto_rawDescGZIP() []byte {
+	file_stack_proto_rawDescOnce.Do(func() {
+		file_stack_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_stack_proto_rawDesc), len(file_stack_proto_rawDesc)))
 	})
-	return file_proto_stack_proto_rawDescData
+	return file_stack_proto_rawDescData
 }
 
-var file_proto_stack_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_proto_stack_proto_goTypes = []any{
+var file_stack_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_stack_proto_goTypes = []any{
 	(*Cargo)(nil),            // 0: peripheral_pb.Cargo
 	(*Stack)(nil),            // 1: peripheral_pb.Stack
 	(*StackMapResponse)(nil), // 2: peripheral_pb.StackMapResponse
 	(*Empty)(nil),            // 3: peripheral_pb.Empty
-	nil,                      // 4: peripheral_pb.StackMapResponse.InfoMapEntry
+	(*Location)(nil),         // 4: peripheral_pb.Location
+	nil,                      // 5: peripheral_pb.StackMapResponse.InfoMapEntry
 }
-var file_proto_stack_proto_depIdxs = []int32{
+var file_stack_proto_depIdxs = []int32{
 	0, // 0: peripheral_pb.Stack.cargo:type_name -> peripheral_pb.Cargo
-	4, // 1: peripheral_pb.StackMapResponse.info_map:type_name -> peripheral_pb.StackMapResponse.InfoMapEntry
+	5, // 1: peripheral_pb.StackMapResponse.info_map:type_name -> peripheral_pb.StackMapResponse.InfoMapEntry
 	1, // 2: peripheral_pb.StackMapResponse.InfoMapEntry.value:type_name -> peripheral_pb.Stack
-	2, // 3: peripheral_pb.StackService.PushStacks:input_type -> peripheral_pb.StackMapResponse
-	3, // 4: peripheral_pb.StackService.PushStacks:output_type -> peripheral_pb.Empty
-	4, // [4:5] is the sub-list for method output_type
-	3, // [3:4] is the sub-list for method input_type
+	4, // 3: peripheral_pb.StackService.AddStack:input_type -> peripheral_pb.Location
+	4, // 4: peripheral_pb.StackService.DeleteStack:input_type -> peripheral_pb.Location
+	2, // 5: peripheral_pb.StackService.PushStacks:input_type -> peripheral_pb.StackMapResponse
+	3, // 6: peripheral_pb.StackService.AddStack:output_type -> peripheral_pb.Empty
+	3, // 7: peripheral_pb.StackService.DeleteStack:output_type -> peripheral_pb.Empty
+	3, // 8: peripheral_pb.StackService.PushStacks:output_type -> peripheral_pb.Empty
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_proto_stack_proto_init() }
-func file_proto_stack_proto_init() {
-	if File_proto_stack_proto != nil {
+func init() { file_stack_proto_init() }
+func file_stack_proto_init() {
+	if File_stack_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_stack_proto_rawDesc), len(file_proto_stack_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_stack_proto_rawDesc), len(file_stack_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_stack_proto_goTypes,
-		DependencyIndexes: file_proto_stack_proto_depIdxs,
-		MessageInfos:      file_proto_stack_proto_msgTypes,
+		GoTypes:           file_stack_proto_goTypes,
+		DependencyIndexes: file_stack_proto_depIdxs,
+		MessageInfos:      file_stack_proto_msgTypes,
 	}.Build()
-	File_proto_stack_proto = out.File
-	file_proto_stack_proto_goTypes = nil
-	file_proto_stack_proto_depIdxs = nil
+	File_stack_proto = out.File
+	file_stack_proto_goTypes = nil
+	file_stack_proto_depIdxs = nil
 }
